@@ -1,0 +1,10 @@
+C:\Source\Talks\streamanalyticsdemo\WebApplication1\SQL Database\bin\Debug\SQL Database.dacpac
+C:\Source\Talks\streamanalyticsdemo\WebApplication1\SQL Database\bin\Debug\SQL_Database.dll
+C:\Source\Talks\streamanalyticsdemo\WebApplication1\SQL Database\bin\Debug\SQL_Database.pdb
+C:\Source\Talks\streamanalyticsdemo\WebApplication1\SQL Database\obj\Debug\SQL_Database.dll
+C:\Source\Talks\streamanalyticsdemo\WebApplication1\SQL Database\obj\Debug\SQL_Database.pdb
+C:\Source\Talks\streamanalyticsdemo\WebApplication1\SQL Database\obj\Debug\Model.xml
+C:\Source\Talks\streamanalyticsdemo\WebApplication1\SQL Database\obj\Debug\refactor.xml
+C:\Source\Talks\streamanalyticsdemo\WebApplication1\SQL Database\obj\Debug\postdeploy.sql
+C:\Source\Talks\streamanalyticsdemo\WebApplication1\SQL Database\obj\Debug\predeploy.sql
+C:\Source\Talks\streamanalyticsdemo\WebApplication1\SQL Database\obj\Debug\SQL Database.sqlprojAssemblyReference.cache

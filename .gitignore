@@ -1,0 +1,12 @@
+WebApplication1/Properties/PublishProfiles/WebApplication20190502085249 - Web Deploy.pubxml
+WebApplication1/obj/Debug/netcoreapp2.1/TemporaryGeneratedFile_036C0B5B-1481-4323-8D20-8F5ADCB23D92.cs
+WebApplication1/obj/
+WebApplication1/bin/
+Order Processing/obj/
+Models/obj/
+Models/bin/
+Event Generator/Properties/PublishProfiles/
+DAL/obj/
+DAL/bin/
+.vs/
+WebApplication1/appsettings.json

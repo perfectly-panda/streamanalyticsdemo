@@ -1,0 +1,2 @@
+C:\Source\Talks\streamanalyticsdemo\WebApplication1\Stream Analytics\obj\Debug\Stream Analytics.asaprojAssemblyReference.cache
+C:\Source\Talks\streamanalyticsdemo\WebApplication1\Stream Analytics\obj\Debug\Stream Analytics.asaproj.CoreCompileInputs.cache
