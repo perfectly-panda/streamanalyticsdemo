@@ -10,6 +10,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using WebApplication;
+using WebApplication.Hubs;
 
 namespace WebApplication1
 {
@@ -28,8 +30,10 @@ namespace WebApplication1
             services.AddSpaStaticFiles();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             services.AddSingleton<IConfiguration>(Configuration);
-           // services.AddSignalR();
+            services.AddSignalR();
             services.AddCors();
+
+            services.AddHostedService<LogEventListener>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -55,10 +59,10 @@ namespace WebApplication1
                 );
 
             app.UseMvc();
-        /*    app.UseSignalR(routes => {
-                routes.MapHub<TruckHub>("/TruckHub");
-                routes.MapHub<NotificationHub>("/NotificationHub");
-            });*/
+            app.UseSignalR(routes => {
+                routes.MapHub<LogHub>("/LogHub");
+               // routes.MapHub<NotificationHub>("/NotificationHub");
+            });
         }
     }
 }

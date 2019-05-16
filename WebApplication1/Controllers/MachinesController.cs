@@ -8,6 +8,10 @@ using DAL;
 using Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Microsoft.AspNetCore.SignalR;
+using WebApplication.Hubs;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 namespace WebApplication1.Controllers
 {
@@ -16,10 +20,12 @@ namespace WebApplication1.Controllers
     public class MachinesController : ControllerBase
     {
         private IConfiguration config;
+        private IHubContext<LogHub> _hubContext;
 
-        public MachinesController(IConfiguration configuration)
+        public MachinesController(IConfiguration configuration, IHubContext<LogHub> hubContext)
         {
             config = configuration;
+            _hubContext = hubContext;
         }
 
         // GET api/machines
@@ -54,25 +60,42 @@ namespace WebApplication1.Controllers
             {
                 var repo = new MachineRepository(conn);
 
-                await repo.CreateMachine(value);
+                var result = await repo.CreateMachine(value);
+
+                await _hubContext.Clients.All.SendAsync("machineUpdate", JsonConvert.SerializeObject(result,
+                    new JsonSerializerSettings
+                    {
+                        ContractResolver = new CamelCasePropertyNamesContractResolver()
+                    }));
+                await _hubContext.Clients.All.SendAsync("newLog", $"{DateTime.UtcNow.ToLongTimeString()} Machine {result.Id} created as {result.MachineType}. -- via UI");
+
             }
         }
 
-        // POST api/machines/break/5
-        [HttpPost("{id}")]
+        // GET api/machines/break/5
+        [HttpPost("break/{id}")]
         public async void Break(int id)
         {
             var machine = new Machine()
             {
                 Id = id,
-                Broken = true
+                Broken = true,
+                Active = true
             };
 
             using (IDbConnection conn = new SqlConnection(config["Data:SqlConnection"]))
             {
                 var repo = new MachineRepository(conn);
 
-                await repo.UpdateMachine(machine);
+                var result = await repo.UpdateMachine(machine);
+
+                await _hubContext.Clients.All.SendAsync("machineUpdate", JsonConvert.SerializeObject(result,
+                    new JsonSerializerSettings
+                    {
+                        ContractResolver = new CamelCasePropertyNamesContractResolver()
+                    }));
+                await _hubContext.Clients.All.SendAsync("newLog", $"{DateTime.UtcNow.ToLongTimeString()} Machine {id} broken. -- via UI");
+
             }
         }
 
@@ -90,7 +113,15 @@ namespace WebApplication1.Controllers
             {
                 var repo = new MachineRepository(conn);
 
-                await repo.UpdateMachine(machine);
+                var result = await repo.UpdateMachine(machine);
+
+                await _hubContext.Clients.All.SendAsync("machineUpdate", JsonConvert.SerializeObject(result,
+                    new JsonSerializerSettings
+                    {
+                        ContractResolver = new CamelCasePropertyNamesContractResolver()
+                    }));
+                await _hubContext.Clients.All.SendAsync("newLog", $"{DateTime.UtcNow.ToLongTimeString()} Machine {id} deactivated. -- via UI");
+
             }
         }
     }

@@ -15,8 +15,8 @@ namespace Models
             WidgetCount = widgetCount;
         }
 
-        public string Id { get; set; }
-        public int WidgetCount { get;}
+        public int Id { get; set; }
+        public int WidgetCount { get; set; }
         public DateTime CreateDate { get; set; }
         public DateTime? CompleteDate { get; set; }
         public bool Completed { get; set; }
@@ -24,15 +24,6 @@ namespace Models
         public int SmashedCount { get; set; }
         public int SlashedCount { get; set; }
         public int CompletedCount { get; set; }
-
-        public bool Error
-        {
-            get {
-                var total = CompletedCount + PendingCount + SmashedCount + SlashedCount;
-
-                return !(total == WidgetCount);
-            }
-        }
 
     }
 }

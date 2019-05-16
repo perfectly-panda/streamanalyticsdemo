@@ -27,7 +27,6 @@ namespace DAL
                     MachineType,
                     Broken,
                     Active,
-                    Variation,
                     CreateDate
                 FROM dbo.Machines";
 
@@ -42,7 +41,6 @@ namespace DAL
                     MachineType,
                     Broken,
                     Active,
-                    Variation,
                     CreateDate
                 FROM dbo.Machines
                 WHERE Active = 1";
@@ -58,12 +56,11 @@ namespace DAL
                     MachineType,
                     Broken,
                     Active,
-                    Variation,
                     CreateDate
                 FROM dbo.Machines
                 WHERE Id = @id";
 
-            var result = await _conn.QueryAsync<Machine>(sql, id);
+            var result = await _conn.QueryAsync<Machine>(sql, new { id });
 
             return result.First();
         }
@@ -78,19 +75,17 @@ namespace DAL
 
             var result = await _conn.ExecuteAsync(sql, machine);
 
-            return machine;
+            return await GetMachine(machine.Id);
         }
 
         public async Task<Machine> CreateMachine(Machine machine)
         {
             var sql = @"
                 INSERT INTO dbo.Machines
-                    (MachineType,
-                    Variation)
+                    (MachineType)
                 OUTPUT INSERTED.*
                 VALUES
-                    (@MachineType,
-                    @Variation)";
+                    (@MachineType)";
 
             var inserted = await _conn.QueryAsync<Machine>(sql, machine);
             return inserted.First();
@@ -128,6 +123,13 @@ namespace DAL
             });
 
             return results;
+        }
+
+        public async Task CleanOldData()
+        {
+            var sql = "delete from machines where active = 0";
+
+            await _conn.ExecuteAsync(sql);
         }
     }
 }

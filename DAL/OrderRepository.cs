@@ -31,9 +31,7 @@ namespace DAL
                     SmashedCount,
                     SlashedCount,
                     CompletedCount
-                FROM dbo.Orders o
-                INNER JOIN dbo.OrderStatus s
-                    on o.Id = s.OrderId";
+                FROM dbo.Orders o";
 
             return await _conn.QueryAsync<Order>(sql);
         }
@@ -85,7 +83,7 @@ namespace DAL
                 FROM dbo.Orders o
                 WHERE o.id = @id";
 
-            var order = await _conn.QueryAsync<Order>(sql, id);
+            var order = await _conn.QueryAsync<Order>(sql, new { id });
 
             return order.FirstOrDefault();
         }
@@ -121,12 +119,18 @@ namespace DAL
                 SmashedCount = @SmashedCount,
                 SlashedCount = @SlashedCount,
                 CompletedCount = @CompletedCount
-            OUTPUT inserted.*
             WHERE id = @id";
 
-            var result = await _conn.QueryAsync<Order>(orderSql, order);
+            await _conn.QueryAsync<Order>(orderSql, order);
 
-            return order;
+            return await GetOrder(order.Id);
+        }
+
+        public async Task CleanOldData()
+        {
+            var sql = "delete from orders where completed = 1";
+
+            await _conn.ExecuteAsync(sql);
         }
     }
 }

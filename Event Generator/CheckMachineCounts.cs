@@ -9,13 +9,18 @@ using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Host;
 using Microsoft.Extensions.Logging;
 using Models;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 namespace Event_Generator
 {
     public static class CheckMachineCounts
     {
         [FunctionName("CheckMachineCounts")]
-        public static async Task Run([TimerTrigger("0 */15 * * * *")]TimerInfo myTimer, ILogger log)
+        public static async Task Run([TimerTrigger("0 */15 * * * *")]TimerInfo myTimer,
+            [ServiceBus("machines", Connection = "ServiceBusConnection")] ICollector<string> machineOutput,
+            [ServiceBus("logs", Connection = "ServiceBusConnection")] ICollector<string> logOutput,
+            ILogger log)
         {
             log.LogInformation($"CheckMachineCounts function executed at: {DateTime.Now}");
 
@@ -38,21 +43,46 @@ namespace Event_Generator
                     {
                         machine.Active = false;
                         await machineRepo.UpdateMachine(machine);
+                        machineOutput.Add(JsonConvert.SerializeObject(machine,
+                            new JsonSerializerSettings
+                            {
+                                ContractResolver = new CamelCasePropertyNamesContractResolver()
+                            }));
+                        logOutput.Add($"{DateTime.UtcNow.ToLongTimeString()} Machine {machine.Id} deactivated.");
                     }
 
                     if(activeMachines.Count(m => !m.Broken && m.MachineType == "Smasher") < machineRate.SettingValue)
                     {
-                        await machineRepo.CreateMachine(new Machine("Smasher", ActionCheck.GenerateInt(10)));
+                        var smasher = await machineRepo.CreateMachine(new Machine("Smasher", ActionCheck.GenerateInt(10)));
+                        machineOutput.Add(JsonConvert.SerializeObject(smasher,
+                            new JsonSerializerSettings
+                            {
+                                ContractResolver = new CamelCasePropertyNamesContractResolver()
+                            }));
+                        logOutput.Add($"{DateTime.UtcNow.ToLongTimeString()} Machine {smasher.Id} created as {smasher.MachineType}.");
                     }
 
                     if (activeMachines.Count(m => !m.Broken && m.MachineType == "Slasher") < machineRate.SettingValue)
                     {
-                        await machineRepo.CreateMachine(new Machine("Slasher", ActionCheck.GenerateInt(10)));
+                        var slasher = await machineRepo.CreateMachine(new Machine("Slasher", ActionCheck.GenerateInt(10)));
+                        machineOutput.Add(JsonConvert.SerializeObject(slasher,
+                            new JsonSerializerSettings
+                            {
+                                ContractResolver = new CamelCasePropertyNamesContractResolver()
+                            }));
+                        logOutput.Add($"{DateTime.UtcNow.ToLongTimeString()} Machine {slasher.Id} created as {slasher.MachineType}.");
                     }
 
                     if (activeMachines.Count(m => !m.Broken && m.MachineType == "Trasher") < machineRate.SettingValue)
                     {
-                        await machineRepo.CreateMachine(new Machine("Trasher", ActionCheck.GenerateInt(10)));
+                        var trasher = await machineRepo.CreateMachine(new Machine("Trasher", ActionCheck.GenerateInt(10)));
+
+                        machineOutput.Add(JsonConvert.SerializeObject(trasher,
+                            new JsonSerializerSettings
+                            {
+                                ContractResolver = new CamelCasePropertyNamesContractResolver()
+                            }));
+                        logOutput.Add($"{DateTime.UtcNow.ToLongTimeString()} Machine {trasher.Id} created as {trasher.MachineType}.");
                     }
 
                 }

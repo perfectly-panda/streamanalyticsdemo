@@ -12,6 +12,8 @@ using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Azure.WebJobs.Host;
 using Microsoft.Extensions.Logging;
 using Models;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 namespace Event_Generator
 {
@@ -20,7 +22,10 @@ namespace Event_Generator
 
         [FunctionName("ProcessOrders")]
         public static async Task RunOrchestrator(
-            [OrchestrationTrigger] DurableOrchestrationContext context, ILogger log)
+            [OrchestrationTrigger] DurableOrchestrationContext context,
+            [ServiceBus("machines", Connection = "ServiceBusConnection")] ICollector<string> machineOutput,
+            [ServiceBus("logs", Connection = "ServiceBusConnection")] ICollector<string> logOutput,
+            ILogger log)
         {
 
             var settingsList = new List<Settings>
@@ -55,6 +60,12 @@ namespace Event_Generator
                         if (result.MachineBroken)
                         {
                             await context.CallActivityAsync("BreakMachine", result.Machine);
+                            machineOutput.Add(JsonConvert.SerializeObject(result.Machine,
+                                new JsonSerializerSettings
+                                {
+                                    ContractResolver = new CamelCasePropertyNamesContractResolver()
+                                }));
+                            logOutput.Add($"{DateTime.UtcNow.ToLongTimeString()} Machine {result.Machine.Id} broken.");
                         }
                     }
 
@@ -128,7 +139,10 @@ namespace Event_Generator
         }
 
         [FunctionName("ProcessResults")]
-        public static async Task<MachineRunResults> ProcessResults([ActivityTrigger] List<MachineRun> machines, ILogger log)
+        public static async Task<MachineRunResults> ProcessResults([ActivityTrigger] List<MachineRun> machines,
+            [ServiceBus("orders", Connection = "ServiceBusConnection")] ICollector<string> orderOutput,
+            [ServiceBus("logs", Connection = "ServiceBusConnection")] ICollector<string> logOutput,
+            ILogger log)
         {
             log.LogDebug("starting run log");
 
@@ -156,8 +170,12 @@ namespace Event_Generator
 
                         machines = results.MachineRuns;
 
+                        bool fixOffByOne = false;
+
                         if (order.PendingCount < 0)
                         {
+                            fixOffByOne = true;
+
                             if (order.SmashedCount > -(order.PendingCount))
                             {
                                 order.SmashedCount += order.PendingCount;
@@ -177,17 +195,30 @@ namespace Event_Generator
 
                         if (order.SmashedCount < 0)
                         {
+                            fixOffByOne = true;
                             order.PendingCount += order.SmashedCount;
                             order.SmashedCount = 0;
                         }
 
                         if (order.SlashedCount < 0)
                         {
+                            fixOffByOne = true;
                             order.PendingCount += order.SlashedCount;
                             order.SlashedCount = 0;
                         }
 
-                        var orderUpdate = orderRepo.UpdateOrder(result.Order).Result;
+                        if (result.SlashedCount > 0 || results.SmashedCount > 0 || results.TrashedCount > 0 || results.WidgetsDestroyed > 0 || fixOffByOne)
+                        {
+                            var orderUpdate = orderRepo.UpdateOrder(result.Order).Result;
+
+
+                            orderOutput.Add(JsonConvert.SerializeObject(result.Order,
+                                new JsonSerializerSettings
+                                {
+                                    ContractResolver = new CamelCasePropertyNamesContractResolver()
+                                }));
+                            logOutput.Add($"{DateTime.UtcNow.ToLongTimeString()} Order updated. Id: {result.Order.Id}, (SM: {result.SmashedCount}, SL: {result.SlashedCount}, TR: {result.TrashedCount}, Failed: {result.WidgetsDestroyed})");
+                        }
                     }
 
                     log.LogWarning($"Processing Complete {results.SmashedCount}, {results.SlashedCount}, {results.TrashedCount}, {results.WidgetsDestroyed}");

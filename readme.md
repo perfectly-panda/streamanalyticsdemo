@@ -1,8 +1,4 @@
-/**********************************
-*                                 *
 *     Deployment Instructions     *
-*                                 *
-**********************************/
 
 Azure Services:
 1) App Service (website)
@@ -16,11 +12,11 @@ Deployment:
 1) If you want to adjust any of the settings, you can change the values in SQL Database > Script.PopulateSettings.sql
 2) Deploy Azure SQL
 3) Create a Service Bus with the following topics:
-	MachineTopic
-	OrderTopic
-	AnalyticsTopic
-	LogTopic
-4) Create Event Hub with a secondary receiver.
+	Machines
+	Orders
+	Analytics
+	Logs
+4) Create Event Hub.
 5) Create a subscription for each topic for the website (remember the name- you will add it to the settings).
 6) Deploy WebApplication to your website.
 	6a) Update SQL Connection string.

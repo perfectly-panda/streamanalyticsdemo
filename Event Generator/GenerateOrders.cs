@@ -10,13 +10,18 @@ using Microsoft.Extensions.Configuration;
 using DAL;
 using System.Linq;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 namespace Event_Generator
 {
     public static class GenerateOrders
     {
         [FunctionName("GenerateOrders")]
-        public static async Task Run([TimerTrigger("0 */5 * * * *")]TimerInfo myTimer, ILogger log)
+        public static async Task Run([TimerTrigger("0 */5 * * * *")]TimerInfo myTimer,
+            [ServiceBus("orders", Connection = "ServiceBusConnection")] ICollector<string> orderOutput,
+            [ServiceBus("logs", Connection = "ServiceBusConnection")] ICollector<string> logOutput,
+            ILogger log)
         {
             log.LogInformation($"GenerateOrders function executed at: {DateTime.Now}");
 
@@ -36,12 +41,19 @@ namespace Event_Generator
                     var settings = await settingsRepo.GetSettings(settingsList);
                     var orderCount = await orderRepo.GetOpenOrderCount();
 
-                    if (orderCount < Setting.GetSetting(settings.ToList(), Settings.MaxActiveOrders)
-                        && ActionCheck.Check(Setting.GetSetting(settings.ToList(), Settings.OrderRate)))
+                    if (orderCount < Setting.GetSetting(settings.ToList(), Settings.MaxActiveOrders)))
                     {
                         Order order = new Order(ActionCheck.GenerateInt((int)settings.First(s => s.Id == Settings.MaxOrderSize).SettingValue));
 
-                        await orderRepo.CreateOrder(order);
+                        var result = await orderRepo.CreateOrder(order);
+
+                        orderOutput.Add(JsonConvert.SerializeObject(result,
+                            new JsonSerializerSettings
+                            {
+                                ContractResolver = new CamelCasePropertyNamesContractResolver()
+                            }));
+                        logOutput.Add($"{DateTime.UtcNow.ToLongTimeString()} New order created. Id: {result.Id}, Widget Count: {result.WidgetCount}");
+
                     }
                 }
             }

@@ -12,7 +12,6 @@ namespace Models
         public Machine(string machineType, int variation)
         {
             MachineType = machineType;
-            Variation = variation;
             CreateDate = DateTime.UtcNow;
             Active = true;
             Broken = false;
@@ -22,7 +21,7 @@ namespace Models
         public string MachineType { get; set; }
         public bool Broken { get; set; }
         public bool Active { get; set; }
-        public int Variation { get; set; }
+        //public int Variation { get; set; }
         public DateTime CreateDate { get; set; }
     }
 }

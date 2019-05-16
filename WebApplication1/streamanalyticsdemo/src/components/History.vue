@@ -1,7 +1,11 @@
 <template>
   <div>
     <h2>Event History</h2>
-    <b-table striped></b-table>
+    <ul id="logList">
+      <li v-for="(log, index) in logs" v-bind:key="index">
+        {{log}}
+      </li>
+    </ul>
   </div>
 </template>
 
@@ -11,5 +15,13 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 @Component({
   components: {},
 })
-export default class History extends Vue {}
+export default class History extends Vue {
+  @Prop() public logs!: string[];
+}
 </script>
+
+<style>
+  #logList {
+    text-align: left;
+  }
+</style>
