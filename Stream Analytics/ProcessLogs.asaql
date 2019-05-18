@@ -1,0 +1,14 @@
+﻿
+SELECT 
+    'aggregates' AS analysisType,
+    System.TimeStamp AS windowEnd,
+    sum(e.SmashedCount + e.SlashedCount + e.TrashedCount) AS totalOutput,
+    sum(e.WidgetsDestroyed) as totalFailed,
+    CASE WHEN avg(getarraylength(e.MachineRuns)) = 0 THEN 0
+        ELSE sum(e.SmashedCount + e.SlashedCount + e.TrashedCount) / avg(getarraylength(e.MachineRuns)) END AS perMachineOutput,
+    CASE WHEN avg(getarraylength(e.MachineRuns)) = 0 THEN 0
+        ELSE sum(e.WidgetsDestroyed) / avg(getarraylength(e.MachineRuns)) END AS perMachineFailure
+INTO Output
+FROM EventHub AS e
+GROUP BY
+    SlidingWindow(minute, 30);

@@ -67,7 +67,7 @@ namespace WebApplication1.Controllers
                     {
                         ContractResolver = new CamelCasePropertyNamesContractResolver()
                     }));
-                await _hubContext.Clients.All.SendAsync("newLog", $"{DateTime.UtcNow.ToLongTimeString()} Machine {result.Id} created as {result.MachineType}. -- via UI");
+                await _hubContext.Clients.All.SendAsync("newLog", $"{TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, TimeZoneInfo.FindSystemTimeZoneById("US Eastern Standard Time")).ToLongTimeString()} Machine {result.Id} created as {result.MachineType}. -- via UI");
 
             }
         }
@@ -94,7 +94,7 @@ namespace WebApplication1.Controllers
                     {
                         ContractResolver = new CamelCasePropertyNamesContractResolver()
                     }));
-                await _hubContext.Clients.All.SendAsync("newLog", $"{DateTime.UtcNow.ToLongTimeString()} Machine {id} broken. -- via UI");
+                await _hubContext.Clients.All.SendAsync("newLog", $"{TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, TimeZoneInfo.FindSystemTimeZoneById("US Eastern Standard Time")).ToLongTimeString()} Machine {id} broken. -- via UI");
 
             }
         }
@@ -120,7 +120,7 @@ namespace WebApplication1.Controllers
                     {
                         ContractResolver = new CamelCasePropertyNamesContractResolver()
                     }));
-                await _hubContext.Clients.All.SendAsync("newLog", $"{DateTime.UtcNow.ToLongTimeString()} Machine {id} deactivated. -- via UI");
+                await _hubContext.Clients.All.SendAsync("newLog", $"{TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, TimeZoneInfo.FindSystemTimeZoneById("US Eastern Standard Time")).ToLongTimeString()} Machine {id} deactivated. -- via UI");
 
             }
         }

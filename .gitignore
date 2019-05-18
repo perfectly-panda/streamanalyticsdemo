@@ -10,3 +10,7 @@ DAL/obj/
 DAL/bin/
 .vs/
 WebApplication1/appsettings.json
+AS Anomoly Detection/ASALocalRun/
+Stream Analytics/ASALocalRun/
+Stream Analytics/Inputs/SampleData/
+AS Anomoly Detection/Inputs/SampleData/

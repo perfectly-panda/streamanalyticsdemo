@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApplication", "WebApplic
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Event Generator", "Event Generator\Event Generator.csproj", "{E4F1DEDC-A530-4773-A09C-565DE4207466}"
 EndProject
-Project("{E6C563F2-BDC2-4A24-ACBF-01715157DCBB}") = "Stream Analytics", "Stream Analytics\Stream Analytics.asaproj", "{EADC2870-1364-4F66-A156-0563ADD27506}"
+Project("{E6C563F2-BDC2-4A24-ACBF-01715157DCBB}") = "SA Find Aggregates", "Stream Analytics\SA Find Aggregates.asaproj", "{EADC2870-1364-4F66-A156-0563ADD27506}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Models", "Models\Models.csproj", "{D9EA8BE3-8DF1-4F33-8714-2BC48AD88B82}"
 EndProject
@@ -19,6 +19,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		readme.md = readme.md
 	EndProjectSection
+EndProject
+Project("{E6C563F2-BDC2-4A24-ACBF-01715157DCBB}") = "AS Anomoly Detection", "AS Anomoly Detection\AS Anomoly Detection.asaproj", "{32E266E0-089D-4FA9-B737-EDD6B8D49094}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -52,6 +54,10 @@ Global
 		{9481D68E-78B3-4752-BC17-DF6368CBA4B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9481D68E-78B3-4752-BC17-DF6368CBA4B7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9481D68E-78B3-4752-BC17-DF6368CBA4B7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{32E266E0-089D-4FA9-B737-EDD6B8D49094}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{32E266E0-089D-4FA9-B737-EDD6B8D49094}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{32E266E0-089D-4FA9-B737-EDD6B8D49094}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{32E266E0-089D-4FA9-B737-EDD6B8D49094}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -8,10 +8,13 @@
     "test:unit": "vue-cli-service test:unit"
   },
   "dependencies": {
+    "chart.js": "^2.8.0",
     "core-js": "^2.6.5",
     "vue": "^2.6.10",
+    "vue-chartjs": "^3.4.2",
     "vue-class-component": "^7.0.2",
-    "vue-property-decorator": "^8.1.0"
+    "vue-property-decorator": "^8.1.0",
+    "vuetrend": "^0.3.4"
   },
   "devDependencies": {
     "@aspnet/signalr": "^1.1.4",

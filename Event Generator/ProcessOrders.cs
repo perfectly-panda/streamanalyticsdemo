@@ -25,6 +25,7 @@ namespace Event_Generator
             [OrchestrationTrigger] DurableOrchestrationContext context,
             [ServiceBus("machines", Connection = "ServiceBusConnection")] ICollector<string> machineOutput,
             [ServiceBus("logs", Connection = "ServiceBusConnection")] ICollector<string> logOutput,
+            [EventHub("mainlogs", Connection = "EventHubConnectionAppSetting")]IAsyncCollector<string> outputEvents,
             ILogger log)
         {
 
@@ -65,7 +66,7 @@ namespace Event_Generator
                                 {
                                     ContractResolver = new CamelCasePropertyNamesContractResolver()
                                 }));
-                            logOutput.Add($"{DateTime.UtcNow.ToLongTimeString()} Machine {result.Machine.Id} broken.");
+                            logOutput.Add($"{TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, TimeZoneInfo.FindSystemTimeZoneById("US Eastern Standard Time")).ToLongTimeString()} Machine {result.Machine.Id} broken.");
                         }
                     }
 
@@ -75,6 +76,11 @@ namespace Event_Generator
                     {
                         runLog.MachineRuns = results;
                         var logResults = machineRepo.CreateRunResults(runLog).Result;
+                        outputEvents.AddAsync(JsonConvert.SerializeObject(runLog,
+                                new JsonSerializerSettings
+                                {
+                                    ContractResolver = new CamelCasePropertyNamesContractResolver()
+                                })).RunSynchronously();
                     }
                 }
             }
@@ -96,7 +102,7 @@ namespace Event_Generator
 
             if (machine.Machine.Broken)
             {
-                adjFailureRate = averageFailureRate * 10;
+                adjFailureRate = averageFailureRate * 100;
             }
 
             //produce widgets
@@ -217,7 +223,7 @@ namespace Event_Generator
                                 {
                                     ContractResolver = new CamelCasePropertyNamesContractResolver()
                                 }));
-                            logOutput.Add($"{DateTime.UtcNow.ToLongTimeString()} Order updated. Id: {result.Order.Id}, (SM: {result.SmashedCount}, SL: {result.SlashedCount}, TR: {result.TrashedCount}, Failed: {result.WidgetsDestroyed})");
+                            logOutput.Add($"{TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, TimeZoneInfo.FindSystemTimeZoneById("US Eastern Standard Time")).ToLongTimeString()} Order updated. Id: {result.Order.Id}, (SM: {result.SmashedCount}, SL: {result.SlashedCount}, TR: {result.TrashedCount}, Failed: {result.WidgetsDestroyed})");
                         }
                     }
 

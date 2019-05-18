@@ -48,7 +48,7 @@ namespace Event_Generator
                             {
                                 ContractResolver = new CamelCasePropertyNamesContractResolver()
                             }));
-                        logOutput.Add($"{DateTime.UtcNow.ToLongTimeString()} Machine {machine.Id} deactivated.");
+                        logOutput.Add($"{TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, TimeZoneInfo.FindSystemTimeZoneById("US Eastern Standard Time")).ToLongTimeString()} Machine {machine.Id} deactivated.");
                     }
 
                     if(activeMachines.Count(m => !m.Broken && m.MachineType == "Smasher") < machineRate.SettingValue)
@@ -59,7 +59,7 @@ namespace Event_Generator
                             {
                                 ContractResolver = new CamelCasePropertyNamesContractResolver()
                             }));
-                        logOutput.Add($"{DateTime.UtcNow.ToLongTimeString()} Machine {smasher.Id} created as {smasher.MachineType}.");
+                        logOutput.Add($"{TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, TimeZoneInfo.FindSystemTimeZoneById("US Eastern Standard Time")).ToLongTimeString()} Machine {smasher.Id} created as {smasher.MachineType}.");
                     }
 
                     if (activeMachines.Count(m => !m.Broken && m.MachineType == "Slasher") < machineRate.SettingValue)
@@ -70,7 +70,7 @@ namespace Event_Generator
                             {
                                 ContractResolver = new CamelCasePropertyNamesContractResolver()
                             }));
-                        logOutput.Add($"{DateTime.UtcNow.ToLongTimeString()} Machine {slasher.Id} created as {slasher.MachineType}.");
+                        logOutput.Add($"{TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, TimeZoneInfo.FindSystemTimeZoneById("US Eastern Standard Time")).ToLongTimeString()} Machine {slasher.Id} created as {slasher.MachineType}.");
                     }
 
                     if (activeMachines.Count(m => !m.Broken && m.MachineType == "Trasher") < machineRate.SettingValue)
@@ -82,7 +82,7 @@ namespace Event_Generator
                             {
                                 ContractResolver = new CamelCasePropertyNamesContractResolver()
                             }));
-                        logOutput.Add($"{DateTime.UtcNow.ToLongTimeString()} Machine {trasher.Id} created as {trasher.MachineType}.");
+                        logOutput.Add($"{TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, TimeZoneInfo.FindSystemTimeZoneById("US Eastern Standard Time")).ToLongTimeString()} Machine {trasher.Id} created as {trasher.MachineType}.");
                     }
 
                 }

@@ -82,7 +82,7 @@ namespace WebApplication.Controllers
                     {
                         ContractResolver = new CamelCasePropertyNamesContractResolver()
                     }));
-                await _hubContext.Clients.All.SendAsync("newLog", $"{DateTime.UtcNow.ToLongTimeString()} New order created. Id: {result.Id}, Widget Count: {result.WidgetCount} -- via UI");
+                await _hubContext.Clients.All.SendAsync("newLog", $"{TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, TimeZoneInfo.FindSystemTimeZoneById("US Eastern Standard Time")).ToLongTimeString()} New order created. Id: {result.Id}, Widget Count: {result.WidgetCount} -- via UI");
             }
         }
 

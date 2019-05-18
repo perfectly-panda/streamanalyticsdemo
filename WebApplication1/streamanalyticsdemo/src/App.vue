@@ -4,24 +4,36 @@
           v-on:navigate="onNav($event)"
         />
     <b-container fluid>
-      <b-row>
-        <b-col sm="2">
-          <Sidebar
-            v-bind:machines="machines"
-          />
-        </b-col>
-        <b-col sm="10">   
-          <Main 
-            v-bind:view="currentView" 
+      <div v-if="currentView == 'Presentation'">
+        <Presentation 
             v-bind:orders="orders"
             v-bind:machines="machines"
-            v-bind:logs="logs"
-          />
-        </b-col>
-      </b-row>
+            v-bind:aggregates="aggregates"
+            v-bind:anomalies="anomalies"
+        />
+      </div>
+      <div v-else>
+        <b-row>
+          <b-col sm="2">
+            <Sidebar
+              v-bind:machines="machines"
+            />
+          </b-col>
+          <b-col sm="10">   
+            <Main 
+              v-bind:view="currentView" 
+              v-bind:orders="orders"
+              v-bind:machines="machines"
+              v-bind:logs="logs"
+              v-bind:aggregates="aggregates"
+              v-bind:anomalies="anomalies"
+            />
+          </b-col>
+        </b-row>
+      </div>
     </b-container>
   </div>
-</template>
+</template> 
 
 <script lang="ts">
 import { Component, Vue, Prop } from 'vue-property-decorator';
@@ -31,9 +43,12 @@ import BootstrapVue from 'bootstrap-vue'
 import Main from './components/Main.vue';
 import Sidebar from './components/Sidebar.vue';
 import Navigation from './components/Navigation.vue';
+import Presentation from './components/Presentation.vue';
 
 import Order from './models/Order';
 import Machine from './models/Machine';
+import Aggregates from './models/Aggregates';
+import Anomalies from './models/Anomalies';
 
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
@@ -49,7 +64,8 @@ axios.defaults.baseURL = 'https://sademo.azurewebsites.net/api'
   components: {
     Main,
     Navigation,
-    Sidebar
+    Sidebar,
+    Presentation
   },
 })
 export default class App extends Vue {
@@ -59,9 +75,15 @@ export default class App extends Vue {
   orders :  Order[] = [];
   machines :  Machine[] = [];
   logs : string[] = [];
+  aggregates: Aggregates[] = [];
+  anomalies: Anomalies[] = [];
+
+  removeSAStart: number = 0;
+  removeSAEnd: number = 2;
 
   logHub = new signalR.HubConnectionBuilder()
     .withUrl("https://sademo.azurewebsites.net/logHub")
+    //.withUrl("https://localhost:44311/logHub")
     .configureLogging(signalR.LogLevel.Information)
     .build();
 
@@ -93,6 +115,18 @@ export default class App extends Vue {
     this.logHub.on("machineUpdate", (message: string) => {
       this.updateMachine(JSON.parse(message));
     });
+    this.logHub.on("machineUpdate", (message: string) => {
+      this.updateMachine(JSON.parse(message));
+    });
+    this.logHub.on("analyticsUpdate", (message: string) => {
+      var parsed = JSON.parse(message);
+      if(parsed.analysisType == "aggregates") {
+          this.handleAggregates(parsed);
+      }
+      else {
+          this.updateAnomalies(parsed);
+      }
+    });
   }
 
   beforeDestroy() {
@@ -119,6 +153,25 @@ export default class App extends Vue {
       }
       else {
         this.machines.splice(index, 1, message);
+      }
+  }
+
+  updateAnomalies(message: Anomalies){
+    var index = this.anomalies.findIndex(function(element){
+          return element.machineId == message.machineId;
+      });
+      if(index == undefined || index == -1){
+        this.anomalies.push(message);
+      }
+      else {
+        this.anomalies.splice(index, 1, message);
+      }
+  }
+
+  handleAggregates(message: Aggregates){
+    this.aggregates.push(message);
+      while(this.aggregates.length > 100){
+        this.aggregates.shift();
       }
   }
 }

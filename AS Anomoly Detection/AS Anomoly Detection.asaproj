@@ -1,0 +1,45 @@
+﻿<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>32e266e0-089d-4fa9-b737-edd6b8d49094</ProjectGuid>
+    <OutputType>File</OutputType>
+    <AssemblyName>AS_Anomoly_Detection</AssemblyName>
+    <StartFile>Script.asaql</StartFile>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <ASATargetsFilePath>$(AppData)\Microsoft\DataLake\MsBuild\1.0\StreamAnalytics.targets</ASATargetsFilePath>
+    <Name>AS Anomoly Detection</Name>
+    <RootNamespace>AS Anomoly Detection</RootNamespace>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\Debug\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <DebugSymbols>false</DebugSymbols>
+    <OutputPath>bin\Release\</OutputPath>
+  </PropertyGroup>
+  <ItemGroup>
+    <Script Include="Script.asaql" />
+  </ItemGroup>
+  <ItemGroup>
+    <Configure Include="Inputs\Input.json">
+      <SubType>Input</SubType>
+    </Configure>
+    <Configure Include="Inputs\local_Input.json">
+      <SubType>InputMock</SubType>
+    </Configure>
+    <Configure Include="Outputs\Output.json">
+      <SubType>Output</SubType>
+    </Configure>
+    <Configure Include="JobConfig.json">
+      <SubType>JobConfig</SubType>
+    </Configure>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Inputs" />
+    <Folder Include="Functions" />
+    <Folder Include="Outputs" />
+  </ItemGroup>
+  <Import Project="$(ASATargetsFilePath)" />
+</Project>

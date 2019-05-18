@@ -41,7 +41,7 @@ namespace Event_Generator
                     var settings = await settingsRepo.GetSettings(settingsList);
                     var orderCount = await orderRepo.GetOpenOrderCount();
 
-                    if (orderCount < Setting.GetSetting(settings.ToList(), Settings.MaxActiveOrders)))
+                    if (orderCount < Setting.GetSetting(settings.ToList(), Settings.MaxActiveOrders))
                     {
                         Order order = new Order(ActionCheck.GenerateInt((int)settings.First(s => s.Id == Settings.MaxOrderSize).SettingValue));
 
@@ -52,7 +52,7 @@ namespace Event_Generator
                             {
                                 ContractResolver = new CamelCasePropertyNamesContractResolver()
                             }));
-                        logOutput.Add($"{DateTime.UtcNow.ToLongTimeString()} New order created. Id: {result.Id}, Widget Count: {result.WidgetCount}");
+                        logOutput.Add($"{TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, TimeZoneInfo.FindSystemTimeZoneById("US Eastern Standard Time")).ToLongTimeString()} New order created. Id: {result.Id}, Widget Count: {result.WidgetCount}");
 
                     }
                 }

@@ -5,6 +5,8 @@
       v-bind:orders="orders"
       v-bind:machines="machines"
       v-bind:logs="logs"
+      v-bind:aggregates="aggregates"
+      v-bind:anomalies="anomalies"
     ></component>
   </div>
 </template>
@@ -15,16 +17,20 @@ import Dashboard from './Dashboard.vue';
 import Orders from './Orders.vue';
 import Machines from './Machines.vue';
 import History from './History.vue';
+import StreamData from './StreamData.vue';
 
 import Order from '../models/Order';
 import Machine from '../models/Machine';
+import Aggregates from '../models/Aggregates';
+import Anomalies from '../models/Anomalies';
 
 @Component({
   components: {
     Dashboard,
     Orders,
     Machines,
-    History
+    History,
+    StreamData
   },
 })
 export default class Main extends Vue {
@@ -32,6 +38,8 @@ export default class Main extends Vue {
   @Prop() public orders!: Order[];
   @Prop() public machines!: Machine[];
   @Prop() public logs!: string[];
+  @Prop() public aggregates!: Aggregates[];
+  @Prop() public anomalies!: Anomalies[];
 }
 </script>
 

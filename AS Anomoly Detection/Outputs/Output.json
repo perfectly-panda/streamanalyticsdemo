@@ -1,0 +1,27 @@
+﻿{
+  "EventHubProperties": null,
+  "BlobStorageProperties": null,
+  "SQLDatabaseProperties": null,
+  "TableStorageProperties": null,
+  "ServiceBusQueueProperties": null,
+  "ServiceBusTopicProperties": {
+    "ServiceBusNamespace": "sademo",
+    "SharedAccessPolicyKey": null,
+    "SharedAccessPolicyName": "RootManageSharedAccessKey",
+    "TopicName": "analytics"
+  },
+  "DocumentDbProperties": null,
+  "PowellBIProperties": null,
+  "AzureDataLakeStoreProperties": null,
+  "AzureFunctionProperties": null,
+  "DataSourceCredentialDomain": "2bcf3c8f-d82f-4422-8a64-cc94d71748d0.StreamAnalyticsCredential",
+  "Name": "Output",
+  "DataSourceType": "Service Bus Topic",
+  "Serialization": {
+    "Encoding": "UTF8",
+    "Type": "Json",
+    "FieldDelimiter": null,
+    "Format": "Array"
+  },
+  "ScriptType": "Output"
+}
