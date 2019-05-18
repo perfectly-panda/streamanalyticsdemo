@@ -34,8 +34,8 @@ export default class StreamData extends Vue {
         Timestamp: a.windowEnd,
         Total: a.totalOutput,
         TotalFailed: a.totalFailed,
-        PerMachineOutput: a.perMachineOutput,
-        PerMachineFailed: a.perMachineFailure
+        PerMachineOutput: a.perMachineOutput.toFixed(2),
+        PerMachineFailed: a.perMachineFailure.toFixed(2)
       }));
   }
 
@@ -43,8 +43,11 @@ export default class StreamData extends Vue {
       return this.anomalies.map(a => ({
         Timestamp: a.timeStamp,
         MachineId: a.machineId,
+        DetectionScore: a.changePointScore.toFixed(2),
         FailureDetected: a.isChangePointAnomaly == 1 ? "Yes" : "No",
-        Correct: a.correctDetection == 1? "Yes" : "No"
+        Failed: a.broken == true ? "Yes" : "No",
+        Correct: a.correctDetection == 1? "Yes" : "No",
+        AverageFailures: a.failures.toFixed(2)
       }));
   }
 

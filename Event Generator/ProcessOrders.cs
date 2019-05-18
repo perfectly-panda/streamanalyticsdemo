@@ -102,13 +102,13 @@ namespace Event_Generator
 
             if (machine.Machine.Broken)
             {
-                adjFailureRate = averageFailureRate * 100;
+                adjFailureRate = averageFailureRate * 10000;
             }
 
             //produce widgets
             var baseProduction = ActionCheck.GenerateInt((int)(averageProductionTime * 2), (int)productionTimeVariability);
 
-            var baseFailure = ActionCheck.GenerateFloat(adjFailureRate * 2, failureRateVariability)/4;
+            var baseFailure = ActionCheck.GenerateFloat(adjFailureRate * 2, failureRateVariability)/2;
 
             baseFailure = baseFailure > 1 ? 1 : baseFailure < 0 ? 0 : baseFailure;
 
@@ -242,7 +242,7 @@ namespace Event_Generator
 
         [FunctionName("ProcessOrders_TimerStart")]
         public static async Task ProcessOrdersStart(
-            [TimerTrigger("0 * * * * *")]TimerInfo myTimer,
+            [TimerTrigger("*/20 * * * * *")]TimerInfo myTimer,
             [OrchestrationClient]DurableOrchestrationClient starter,
             ILogger log)
         {

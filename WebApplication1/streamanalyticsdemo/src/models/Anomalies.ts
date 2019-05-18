@@ -2,7 +2,7 @@ export default class Anomalies {
     timeStamp!: string;
     machineId!: number;
     broken!: boolean;
-    failures!: Date;
+    failures!: number;
     capacity!: Date;
     changePointScore!: number;
     isChangePointAnomaly!: number;

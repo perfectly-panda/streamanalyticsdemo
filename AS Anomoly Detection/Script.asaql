@@ -9,10 +9,10 @@ smoothing as (
         System.Timestamp as timeStamp,
         avg(cast(machineRun.failedOutput as Float)) AS failures,
         avg(cast(machineRun.completedOutput as Float)) AS capacity,
-        machineRun.machineBroken AS broken,
+        machineRun.machine.broken AS broken,
         machineRun.machine.id AS machineId
     from getMachineRuns
-    GROUP BY TUMBLINGWINDOW(minute, 5),  machineRun.machine.id, machineRun.machineBroken
+    GROUP BY TUMBLINGWINDOW(minute, 5),  machineRun.machine.id, machineRun.machine.broken
 ),
 detection AS (
     select  

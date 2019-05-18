@@ -157,6 +157,8 @@ export default class App extends Vue {
   }
 
   updateAnomalies(message: Anomalies){
+            console.log(message);
+
     var index = this.anomalies.findIndex(function(element){
           return element.machineId == message.machineId;
       });
@@ -164,6 +166,7 @@ export default class App extends Vue {
         this.anomalies.push(message);
       }
       else {
+        console.log("updated");
         this.anomalies.splice(index, 1, message);
       }
   }

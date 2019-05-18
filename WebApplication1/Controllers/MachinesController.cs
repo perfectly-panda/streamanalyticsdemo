@@ -60,7 +60,7 @@ namespace WebApplication1.Controllers
             {
                 var repo = new MachineRepository(conn);
 
-                var result = await repo.CreateMachine(value);
+                var result = await repo.FindMachineToActivate(value.MachineType);
 
                 await _hubContext.Clients.All.SendAsync("machineUpdate", JsonConvert.SerializeObject(result,
                     new JsonSerializerSettings

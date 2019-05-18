@@ -18,7 +18,7 @@ namespace Event_Generator
     public static class GenerateOrders
     {
         [FunctionName("GenerateOrders")]
-        public static async Task Run([TimerTrigger("0 */5 * * * *")]TimerInfo myTimer,
+        public static async Task Run([TimerTrigger("0 */2 * * * *")]TimerInfo myTimer,
             [ServiceBus("orders", Connection = "ServiceBusConnection")] ICollector<string> orderOutput,
             [ServiceBus("logs", Connection = "ServiceBusConnection")] ICollector<string> logOutput,
             ILogger log)

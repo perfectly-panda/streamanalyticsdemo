@@ -35,20 +35,20 @@ namespace Event_Generator
                     var activeMachines = await machineRepo.GetActiveMachines();
 
                     //decomission broken machines
-                    var brokenMachines = activeMachines.Where(m => m.Broken);
+                    var brokenMachines = activeMachines.Where(m => m.Broken).Take(3);
 
                     log.LogDebug($"Found {brokenMachines.Count()} broken machines. Removing from circulation.");
 
                     foreach(var machine in brokenMachines)
                     {
-                        machine.Active = false;
+                        machine.Broken = false;
                         await machineRepo.UpdateMachine(machine);
                         machineOutput.Add(JsonConvert.SerializeObject(machine,
                             new JsonSerializerSettings
                             {
                                 ContractResolver = new CamelCasePropertyNamesContractResolver()
                             }));
-                        logOutput.Add($"{TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, TimeZoneInfo.FindSystemTimeZoneById("US Eastern Standard Time")).ToLongTimeString()} Machine {machine.Id} deactivated.");
+                        logOutput.Add($"{TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, TimeZoneInfo.FindSystemTimeZoneById("US Eastern Standard Time")).ToLongTimeString()} Machine {machine.Id} repaired.");
                     }
 
                     if(activeMachines.Count(m => !m.Broken && m.MachineType == "Smasher") < machineRate.SettingValue)

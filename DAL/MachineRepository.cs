@@ -65,6 +65,28 @@ namespace DAL
             return result.First();
         }
 
+        public async Task<Machine> FindMachineToActivate(string type)
+        {
+            var sql = @"
+                Select id from Machines where machineType = @type
+                AND active = 0";
+
+            var result = await _conn.QueryAsync<Machine>(sql, new { type });
+
+            if(result.First() == null)
+            {
+
+                return await CreateMachine(new Machine(type, 0));
+            }
+
+            var toActivate = result.First();
+            toActivate.Active = true;
+            toActivate.Broken = false;
+            await UpdateMachine(toActivate);
+
+            return await GetMachine(toActivate.Id);
+        }
+
         public async Task<Machine> UpdateMachine(Machine machine)
         {
             var sql = @"
