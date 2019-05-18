@@ -1,28 +1,28 @@
 ﻿WITH getMachineRuns as (
     SELECT 
+        input.RunTime AS RunTime,
         machineRuns.ArrayValue AS machineRun
     FROM input
     CROSS APPLY getarrayelements(input.machineRuns) as machineRuns
 ),
 smoothing as (
     select  
-        System.Timestamp as timeStamp,
         avg(cast(machineRun.failedOutput as Float)) AS failures,
         avg(cast(machineRun.completedOutput as Float)) AS capacity,
-        machineRun.machine.broken AS broken,
+        LAST(machineRun.machine.broken) OVER (PARTITION BY machineRun.machine.id LIMIT DURATION(hour, 1)) AS broken,
         machineRun.machine.id AS machineId
     from getMachineRuns
-    GROUP BY TUMBLINGWINDOW(minute, 5),  machineRun.machine.id, machineRun.machine.broken
+    GROUP BY SlidingWINDOW(minute, 3),  machineRun.machine.id, LAST(machineRun.machine.broken) OVER (PARTITION BY machineRun.machine.id LIMIT DURATION(hour, 1))
 ),
 detection AS (
     select  
-        timeStamp,
+        System.TimeStamp AS timeStamp,
         machineId,
         broken,
         failures,
         capacity,
-        AnomalyDetection_ChangePoint(failures, 80, 200) 
-            OVER(LIMIT DURATION(hour, 8)) as ChangePointScore
+        AnomalyDetection_SpikeAndDip(failures, 90, 2000, 'spikes') 
+            OVER(PARTITION BY machineId LIMIT DURATION(hour, 8)) as ChangePointScore
     FROM smoothing
 )
 select 
@@ -32,8 +32,8 @@ select
     broken,
     failures,
     capacity,
-    CAST(GetRecordPropertyValue(ChangePointScore, 'Score') as float) as ChangePointScore,
-    CAST(GetRecordPropertyValue(ChangePointScore, 'IsAnomaly') as bigint) as IsChangePointAnomaly,
+    CAST(GetRecordPropertyValue(ChangePointScore, 'Score') as float) as changePointScore,
+    CAST(GetRecordPropertyValue(ChangePointScore, 'IsAnomaly') as bigint) as isChangePointAnomaly,
     CASE WHEN CAST(GetRecordPropertyValue(ChangePointScore, 'IsAnomaly') as bigint) = broken THEN 1 ELSE 0 END as correctDetection
 INTO Output
 FROM detection
