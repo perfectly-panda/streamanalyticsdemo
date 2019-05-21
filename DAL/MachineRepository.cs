@@ -73,7 +73,7 @@ namespace DAL
 
             var result = await _conn.QueryAsync<Machine>(sql, new { type });
 
-            if(result.First() == null)
+            if(result.FirstOrDefault() == null)
             {
 
                 return await CreateMachine(new Machine(type, 0));
