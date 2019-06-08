@@ -18,6 +18,7 @@ import Orders from './Orders.vue';
 import Machines from './Machines.vue';
 import History from './History.vue';
 import StreamData from './StreamData.vue';
+import PBIDashboard from "./PBIDashboard.vue"
 
 import Order from '../models/Order';
 import Machine from '../models/Machine';
@@ -30,7 +31,8 @@ import Anomalies from '../models/Anomalies';
     Orders,
     Machines,
     History,
-    StreamData
+    StreamData,
+    PBIDashboard
   },
 })
 export default class Main extends Vue {

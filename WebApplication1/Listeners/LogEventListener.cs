@@ -96,7 +96,7 @@ namespace WebApplication
 
             await _analyticsClient.CompleteAsync(message.SystemProperties.LockToken);
 
-            await _hubContext.Clients.All.SendAsync("analyticsUpdate", JsonConvert.SerializeObject(JsonConvert.DeserializeObject(Encoding.UTF8.GetString(message.Body))));
+            await _hubContext.Clients.All.SendAsync("analyticsUpdate", Encoding.UTF8.GetString(message.Body));
         }
 
         // Use this handler to examine the exceptions received on the message pump.

@@ -7,6 +7,7 @@
         <b-nav-item v-on:click="$emit('navigate', 'Orders')">Orders</b-nav-item>
         <b-nav-item v-on:click="$emit('navigate', 'History')">Event History</b-nav-item>
         <b-nav-item v-on:click="$emit('navigate', 'StreamData')">Stream Data</b-nav-item>
+        <b-nav-item v-on:click="$emit('navigate', 'PBIDashboard')">Power BI</b-nav-item>
         <b-nav-item v-on:click="$emit('navigate', 'Presentation')">Presentation</b-nav-item>
       </b-navbar-nav>
     </b-navbar>

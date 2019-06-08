@@ -58,7 +58,7 @@ const signalR = require("@aspnet/signalr");
 Vue.use(BootstrapVue)
 Vue.prototype.$axios = axios
 axios.defaults.baseURL = 'https://sademo.azurewebsites.net/api'
-//axios.defaults.baseURL = 'https://localhost:44311/api'
+//axios.defaults.baseURL = 'https://localhost:44311/api' 
 
 @Component({
   components: {
@@ -119,6 +119,7 @@ export default class App extends Vue {
       this.updateMachine(JSON.parse(message));
     });
     this.logHub.on("analyticsUpdate", (message: string) => {
+      console.log(message);
       var parsed = JSON.parse(message);
       if(parsed.analysisType == "aggregates") {
           this.handleAggregates(parsed);
@@ -157,8 +158,7 @@ export default class App extends Vue {
   }
 
   updateAnomalies(message: Anomalies){
-            console.log(message);
-
+    console.log("message");
     var index = this.anomalies.findIndex(function(element){
           return element.machineId == message.machineId;
       });
@@ -166,7 +166,6 @@ export default class App extends Vue {
         this.anomalies.push(message);
       }
       else {
-        console.log("updated");
         this.anomalies.splice(index, 1, message);
       }
   }

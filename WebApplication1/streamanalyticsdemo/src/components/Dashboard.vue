@@ -1,6 +1,5 @@
 <template>
   <div>
-    <h2>Dashboard</h2>
     <p>"First we smash it, then we slash it, then we trash it cause you didn't want that broken garbage anyway." --CEO</p>
     <b-container fluid>
       <b-row>

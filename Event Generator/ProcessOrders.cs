@@ -58,7 +58,7 @@ namespace Event_Generator
 
                         results.Add(result);
 
-                        if (result.MachineBroken)
+                       /* if (result.MachineBroken)
                         {
                             await context.CallActivityAsync("BreakMachine", result.Machine);
                             machineOutput.Add(JsonConvert.SerializeObject(result.Machine,
@@ -67,7 +67,7 @@ namespace Event_Generator
                                     ContractResolver = new CamelCasePropertyNamesContractResolver()
                                 }));
                             logOutput.Add($"{TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, TimeZoneInfo.FindSystemTimeZoneById("US Eastern Standard Time")).ToLongTimeString()} Machine {result.Machine.Id} broken.");
-                        }
+                        }*/
                     }
 
                     var runLog = await context.CallActivityAsync<MachineRunResults>("ProcessResults", results);
